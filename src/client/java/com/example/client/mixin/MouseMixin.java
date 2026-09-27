@@ -10,11 +10,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MouseHandler.class)
 public class MouseMixin {
-    @Inject(at= @At("HEAD"), method="onButton")
+    @Inject(at= @At("HEAD"), method="onButton", cancellable = true)
     public void onButton(final long handle,
                          final MouseButtonInfo info,
                          final @MouseButtonInfo.Action int action,
                          CallbackInfo ci){
-        ExampleMod.LOGGER.info("Mouse button triggered: {}, {}", info, action);
+        ExampleMod.LOGGER.debug("Mouse button triggered: {}, {}", info, action);
+        if (info.button() == 5 || info.button() == 4) {//skip processing for mouse5 and mouse4
+            ci.cancel();
+        }
     }
 }
